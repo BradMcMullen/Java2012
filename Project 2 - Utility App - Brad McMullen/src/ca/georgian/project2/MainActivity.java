@@ -1,3 +1,9 @@
+//MainActivity.java
+//Brad McMullen
+//Last Modified: December 11, 2012.
+//Purpose: This is the main area of my stop-watch application.  This is where the timer runs
+//updates the textviews, starts/stops/resets, etc.
+
 package ca.georgian.project2;
 
 import java.text.DecimalFormat;
@@ -15,6 +21,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
+	//Lots of variables.
 	Button startbutton;
 	Button stopbutton;
 	Button lapbutton;
@@ -48,7 +55,8 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
-
+		
+		//Find GUI elements.
 		timeDisplay = (TextView) findViewById(R.id.timeText);
 		currLapDisplay = (TextView) findViewById(R.id.currentlaptext);
 		prevLapDisplay = (TextView) findViewById(R.id.previouslaptext);
@@ -58,6 +66,7 @@ public class MainActivity extends Activity {
 		lapbutton = (Button) findViewById(R.id.lapbtn);
 		resetbutton = (Button) findViewById(R.id.resetbtn);
 		
+		//Buttons that should not be clickable at launch.
 		stopbutton.setClickable(false);
 		lapbutton.setClickable(false);
 		resetbutton.setClickable(false);
@@ -66,9 +75,11 @@ public class MainActivity extends Activity {
 		stopbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				mHandler.removeCallbacks(mUpdateTimeTask);
+				//Reset starting time to 0.
 				mStartTime = 0L;
 				startbutton.setClickable(true);
 				resetbutton.setClickable(true);
+				//Lap button only clickable when timer is running.
 				lapbutton.setClickable(false);
 			}
 		});
@@ -76,6 +87,7 @@ public class MainActivity extends Activity {
 		//Reset Button
 		resetbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
+				//Reset all textviews and timer related variables.
 				timeDisplay.setText("0:00:00.0");
 				currLapDisplay.setText("0:00:00.0");
 				prevLapDisplay.setText("0:00:00.0");
@@ -93,11 +105,16 @@ public class MainActivity extends Activity {
 		//Lap Button
 		lapbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
+				//Checking if current lap took more or less cycles than the fastest to determine
+				//whether or not this lap was faster than the other.
 				if(totalloops <= totalloopslow){
 					totalloopslow = totalloops;
+					//Get current laptime if it is faster.
 					fastLapDisplay.setText(currLapDisplay.getText());
 				}
+				//Get and set previous lap.
 				prevLapDisplay.setText(currLapDisplay.getText());
+				//Reset current lap and variables.
 				currsec = 0;
 				currmin = 0;
 				currhour = 0;
@@ -109,7 +126,8 @@ public class MainActivity extends Activity {
 		
 		//Start Button
 		startbutton.setOnClickListener(new OnClickListener() {
-	
+			
+			//Handler
 			public void onClick(View v) {
 				if (mStartTime == 0L) {
 		            mStartTime = System.currentTimeMillis();
@@ -117,6 +135,7 @@ public class MainActivity extends Activity {
 		            mHandler.postDelayed(mUpdateTimeTask, 100);
 		            startbutton.setClickable(false);
 		            resetbutton.setClickable(false);
+		            //Only lap button and stop button clickable when timer running.
 		            lapbutton.setClickable(true);
 		       }
 			}
@@ -126,6 +145,7 @@ public class MainActivity extends Activity {
 		
     }
     
+    //The process that runs every time the timer ticks.
     private Runnable mUpdateTimeTask = new Runnable() {
 		   public void run() {
 			   totalloops++;
@@ -158,6 +178,8 @@ public class MainActivity extends Activity {
 			   DecimalFormat onedeci = new DecimalFormat("#0.0");
 			   secondsstr = onedeci.format(seconds);
 			   currsecstr = onedeci.format(currsec);
+			   
+			   //Converting to strings.
 			   minutestr = Integer.toString(minutes);
 			   currminstr = Integer.toString(currmin);
 			   hourstr = Integer.toString(hours);
@@ -199,6 +221,7 @@ public class MainActivity extends Activity {
 					timeDisplay.setText(hourstr + ":" + minutestr + ":" + secondsstr);
 				}//End of main display.
 				
+				
 				//Start of sub-displays
 				//Seconds Only
 				if(currsec > 9.9 && currmin == 0){
@@ -235,6 +258,7 @@ public class MainActivity extends Activity {
 				}
 				   
 				//End of sub-displays
+				//Handler/Timer iteration speed control.
 				mHandler.postDelayed(mUpdateTimeTask, 10);
 		   }
 		};//
