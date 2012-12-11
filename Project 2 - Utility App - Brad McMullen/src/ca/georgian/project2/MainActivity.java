@@ -107,6 +107,10 @@ public class MainActivity extends Activity {
 				currhour = 0;
 				totalloopslow = 1000000000;
 				startbutton.setClickable(true);
+				for(int i = (lapnum - 1); i >= 0; i--){
+					mytable.removeViewAt(i);
+				}
+				lapnum = 1;
 			}
 		});
 		
