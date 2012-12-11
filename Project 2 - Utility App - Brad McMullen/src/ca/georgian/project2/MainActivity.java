@@ -20,10 +20,9 @@ public class MainActivity extends Activity {
 	Button lapbutton;
 	Button resetbutton;
 	double seconds = 0;
-	//Used to get fastest laps and slowest laps if I implement it.
+	//Used to get fastest laps..
 	double totalloops = 0;
-	double totalloopshigh = 0;
-	//Arbitrary starting point so every lap will be lower than this.
+	//Arbitrary starting point so every lap will be faster than this.
 	double totalloopslow = 1000000000;
 	////////////////////////////////////////////////////////////////
     Integer minutes = 0;
@@ -31,10 +30,19 @@ public class MainActivity extends Activity {
     String timeStr = "";
     private Handler mHandler = new Handler();
     TextView timeDisplay;
+    TextView currLapDisplay;
+    TextView prevLapDisplay;
+    TextView fastLapDisplay;
     long mStartTime = 0L;
     String secondsstr;
     String minutestr;
     String hourstr;
+    double currsec = 0;
+    String currsecstr;
+    int currmin = 0;
+    String currminstr;
+    int currhour = 0;
+    String currhourstr;
     
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,11 +50,18 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main_activity);
 
 		timeDisplay = (TextView) findViewById(R.id.timeText);
+		currLapDisplay = (TextView) findViewById(R.id.currentlaptext);
+		prevLapDisplay = (TextView) findViewById(R.id.previouslaptext);
+		fastLapDisplay = (TextView) findViewById(R.id.fastlaptext);
 		startbutton = (Button) findViewById(R.id.startbtn);
 		stopbutton = (Button) findViewById(R.id.stopbtn);
 		lapbutton = (Button) findViewById(R.id.lapbtn);
 		resetbutton = (Button) findViewById(R.id.resetbtn);
-	
+		
+		stopbutton.setClickable(false);
+		lapbutton.setClickable(false);
+		resetbutton.setClickable(false);
+		
 		//Stop Button
 		stopbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
@@ -54,17 +69,43 @@ public class MainActivity extends Activity {
 				mStartTime = 0L;
 				startbutton.setClickable(true);
 				resetbutton.setClickable(true);
+				lapbutton.setClickable(false);
 			}
 		});
 		
+		//Reset Button
 		resetbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				timeDisplay.setText("0:00:00.0");
+				currLapDisplay.setText("0:00:00.0");
+				prevLapDisplay.setText("0:00:00.0");
+				fastLapDisplay.setText("0:00:00.0");
 				seconds = 0;
+				currsec = 0;
 				minutes = 0;
+				currmin = 0;
 				hours = 0;
+				currhour = 0;
+				totalloopslow = 1000000000;
 			}
 		});
+		
+		//Lap Button
+		lapbutton.setOnClickListener(new OnClickListener(){
+			public void onClick(View v){
+				if(totalloops <= totalloopslow){
+					totalloopslow = totalloops;
+					fastLapDisplay.setText(currLapDisplay.getText());
+				}
+				prevLapDisplay.setText(currLapDisplay.getText());
+				currsec = 0;
+				currmin = 0;
+				currhour = 0;
+				currLapDisplay.setText("0:00:00.0");
+				totalloops = 0;
+			}
+		});
+		
 		
 		//Start Button
 		startbutton.setOnClickListener(new OnClickListener() {
@@ -72,10 +113,11 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				if (mStartTime == 0L) {
 		            mStartTime = System.currentTimeMillis();
-		            //mHandler.removeCallbacks(mUpdateTimeTask);
+		            mHandler.removeCallbacks(mUpdateTimeTask);
 		            mHandler.postDelayed(mUpdateTimeTask, 100);
 		            startbutton.setClickable(false);
 		            resetbutton.setClickable(false);
+		            lapbutton.setClickable(true);
 		       }
 			}
 				
@@ -86,15 +128,12 @@ public class MainActivity extends Activity {
     
     private Runnable mUpdateTimeTask = new Runnable() {
 		   public void run() {
-			   seconds = seconds + 0.1;
 			   totalloops++;
-			   //Decimal Formatting, to tenths of a second
-			   DecimalFormat onedeci = new DecimalFormat("#0.0");
-			   secondsstr = onedeci.format(seconds);
-			   minutestr = Integer.toString(minutes);
-			   hourstr = Integer.toString(hours);
+			   seconds = seconds + 0.1;
+			   currsec = currsec + 0.1;
+			   totalloops++;
 			   
-			   
+			   //Main Display
 			   if(seconds > 59.9){
 				   seconds = 0;
 				   minutes++;
@@ -104,7 +143,28 @@ public class MainActivity extends Activity {
 				   minutes = 0;
 				   hours++;
 			   }
-			   	//Label Updating
+			   //Sub-Display
+			   if(currsec > 59.9){
+				   currsec = 0;
+				   currmin++;
+			   }   
+			   if(currmin > 59){
+				   currmin = 0;
+				   currhour++;
+			   }
+			   
+			   
+			   //Decimal Formatting, to tenths of a second
+			   DecimalFormat onedeci = new DecimalFormat("#0.0");
+			   secondsstr = onedeci.format(seconds);
+			   currsecstr = onedeci.format(currsec);
+			   minutestr = Integer.toString(minutes);
+			   currminstr = Integer.toString(currmin);
+			   hourstr = Integer.toString(hours);
+			   currhourstr = Integer.toString(currhour);
+			   
+			   
+			   	//Label Updating - Main Display
 			   	//Seconds Only
 				if(seconds > 9.9 && minutes == 0){
 					timeDisplay.setText("0:00:" + secondsstr);
@@ -127,18 +187,55 @@ public class MainActivity extends Activity {
 				}
 				//Seconds, Minutes and Hours
 				else if (seconds <= 9.9 && minutes >= 0 && minutes <= 9 && hours <= 9){
-					timeDisplay.setText(hours + ":" + "0" + minutes + ":" + "0" + seconds);
+					timeDisplay.setText(hourstr + ":" + "0" + minutestr + ":" + "0" + secondsstr);
 				}
 				else if (seconds > 9.9 && minutes >= 0 && minutes <= 9 && hours <= 9){
-					timeDisplay.setText(hours + ":" + "0" + minutes + ":" + seconds);
+					timeDisplay.setText(hourstr + ":" + "0" + minutestr + ":" + secondsstr);
 				}
 				else if (seconds <= 9.9 && minutes > 9 && hours <= 9){
-					timeDisplay.setText(hours + ":" + minutes + ":" + "0" + seconds);
+					timeDisplay.setText(hourstr + ":" + minutestr + ":" + "0" + secondsstr);
 				}
 				else{
-					timeDisplay.setText(hours + ":" + minutes + ":" + seconds);
+					timeDisplay.setText(hourstr + ":" + minutestr + ":" + secondsstr);
+				}//End of main display.
+				
+				//Start of sub-displays
+				//Seconds Only
+				if(currsec > 9.9 && currmin == 0){
+					currLapDisplay.setText("0:00:" + currsecstr);
 				}
-				mHandler.postDelayed(mUpdateTimeTask, 50);
+				else if (currsec <= 9.9 && currmin == 0){
+					currLapDisplay.setText("0:00:0" + currsecstr);
+				}
+				//Seconds and minutes
+				else if (currsec <= 9.9 && currmin >= 0 && currmin <= 10){
+					currLapDisplay.setText("0:0" + currminstr + ":" + "0" + currsecstr);
+				}
+				else if (currsec > 9.9 && currmin >= 0 && currmin <= 10){
+					currLapDisplay.setText("0:0" + currminstr + ":" + currsecstr);
+				}
+				else if (currsec <= 9.9 && currmin > 9){
+					currLapDisplay.setText("0:" + currminstr + ":" + "0" + currsecstr);
+				}
+				else if (currsec > 9.9 && currmin > 9){
+					currLapDisplay.setText("0:" + currminstr + ":" + currsecstr);
+				}
+				//Seconds, Minutes and Hours
+				else if (currsec <= 9.9 && currmin >= 0 && currmin <= 9 && currhour <= 9){
+					currLapDisplay.setText(currhourstr + ":" + "0" + currminstr + ":" + "0" + currsecstr);
+				}
+				else if (currsec > 9.9 && currmin >= 0 && currmin <= 9 && currhour <= 9){
+					currLapDisplay.setText(currhourstr + ":" + "0" + currminstr + ":" + currsecstr);
+				}
+				else if (currsec <= 9.9 && currmin > 9 && currhour <= 9){
+					currLapDisplay.setText(currhourstr + ":" + currminstr + ":" + "0" + currsecstr);
+				}
+				else{
+					currLapDisplay.setText(currhourstr + ":" + currminstr + ":" + currsecstr);
+				}
+				   
+				//End of sub-displays
+				mHandler.postDelayed(mUpdateTimeTask, 10);
 		   }
 		};//
 		
