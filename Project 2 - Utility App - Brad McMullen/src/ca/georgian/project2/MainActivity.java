@@ -11,12 +11,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -50,6 +53,8 @@ public class MainActivity extends Activity {
     String currminstr;
     int currhour = 0;
     String currhourstr;
+    private TableLayout mytable;
+    int lapnum = 1;
     
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,8 @@ public class MainActivity extends Activity {
 		lapbutton = (Button) findViewById(R.id.lapbtn);
 		resetbutton = (Button) findViewById(R.id.resetbtn);
 		
+		mytable = (TableLayout) findViewById(R.id.lapLayout);
+		
 		//Buttons that should not be clickable at launch.
 		stopbutton.setClickable(false);
 		lapbutton.setClickable(false);
@@ -74,10 +81,10 @@ public class MainActivity extends Activity {
 		//Stop Button
 		stopbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
+				inflateLaps("", 0);
 				mHandler.removeCallbacks(mUpdateTimeTask);
 				//Reset starting time to 0.
 				mStartTime = 0L;
-				startbutton.setClickable(true);
 				resetbutton.setClickable(true);
 				//Lap button only clickable when timer is running.
 				lapbutton.setClickable(false);
@@ -99,12 +106,15 @@ public class MainActivity extends Activity {
 				hours = 0;
 				currhour = 0;
 				totalloopslow = 1000000000;
+				startbutton.setClickable(true);
 			}
 		});
 		
 		//Lap Button
 		lapbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
+				inflateLaps("", 0);
+				lapnum++;
 				//Checking if current lap took more or less cycles than the fastest to determine
 				//whether or not this lap was faster than the other.
 				if(totalloops <= totalloopslow){
@@ -262,5 +272,28 @@ public class MainActivity extends Activity {
 				mHandler.postDelayed(mUpdateTimeTask, 10);
 		   }
 		};//
+		
+		//Layout inflater for lap times with assistance from FavouriteTwitterSearches
+		private void inflateLaps(String tag, int index){
+		      // get a reference to the LayoutInflater service
+		      LayoutInflater inflater = (LayoutInflater) getSystemService(
+		         Context.LAYOUT_INFLATER_SERVICE);
+
+		      // Inflate inflater_activity.xml to create new lap and time textviews.
+		      View newTagView = inflater.inflate(R.layout.inflater_activity, null);
+		       
+		      // Get inflaptv and set its text.
+		      TextView inflaptv = 
+		         (TextView) newTagView.findViewById(R.id.lapnumtv);
+		      inflaptv.setText("   Lap: " + lapnum); 
+
+		      // Get inftimetv and set its text.
+		      TextView inftimetv = 
+		         (TextView) newTagView.findViewById(R.id.laptimetv); 
+		      inftimetv.setText(currLapDisplay.getText());
+
+		      // Add new textviews to lapLayout.
+		      mytable.addView(newTagView, index);
+		} // end makeTagGUI
 		
 }
