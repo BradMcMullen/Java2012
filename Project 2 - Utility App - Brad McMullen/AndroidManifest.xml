@@ -24,6 +24,10 @@
             android:name=".MainActivity"
             android:label="main_activity" >
         </activity>
+        <activity
+            android:name=".SecondaryActivity"
+            android:label="secondary_activity" >
+        </activity>
     </application>
 
 </manifest>

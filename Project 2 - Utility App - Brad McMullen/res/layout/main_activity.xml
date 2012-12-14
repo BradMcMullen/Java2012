@@ -118,5 +118,13 @@
             </TableLayout>
         </ScrollView>
     </TableRow>
+
+    <Button
+        android:id="@+id/optionbtn"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_x="118dp"
+        android:layout_y="425dp"
+        android:text="Options" />
 
 </AbsoluteLayout>

@@ -12,6 +12,7 @@ import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -29,6 +30,7 @@ public class MainActivity extends Activity {
 	Button stopbutton;
 	Button lapbutton;
 	Button resetbutton;
+	Button optionbutton;
 	double seconds = 0;
 	//Used to get fastest laps..
 	double totalloops = 0;
@@ -55,6 +57,10 @@ public class MainActivity extends Activity {
     String currhourstr;
     private TableLayout mytable;
     int lapnum = 1;
+    int maxlaps = 1000;
+    boolean stop = false;
+    boolean lap = false;
+    boolean resumed = false;
     
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,7 @@ public class MainActivity extends Activity {
 		stopbutton = (Button) findViewById(R.id.stopbtn);
 		lapbutton = (Button) findViewById(R.id.lapbtn);
 		resetbutton = (Button) findViewById(R.id.resetbtn);
+		optionbutton = (Button) findViewById(R.id.optionbtn);
 		
 		mytable = (TableLayout) findViewById(R.id.lapLayout);
 		
@@ -81,6 +88,7 @@ public class MainActivity extends Activity {
 		//Stop Button
 		stopbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
+				stop = true;
 				inflateLaps("", 0);
 				mHandler.removeCallbacks(mUpdateTimeTask);
 				//Reset starting time to 0.
@@ -88,6 +96,9 @@ public class MainActivity extends Activity {
 				resetbutton.setClickable(true);
 				//Lap button only clickable when timer is running.
 				lapbutton.setClickable(false);
+				startbutton.setClickable(false);
+				stopbutton.setClickable(false);
+				lapnum++;
 			}
 		});
 		
@@ -107,7 +118,11 @@ public class MainActivity extends Activity {
 				currhour = 0;
 				totalloopslow = 1000000000;
 				startbutton.setClickable(true);
-				for(int i = (lapnum - 1); i >= 0; i--){
+				optionbutton.setClickable(true);
+				stopbutton.setClickable(false);
+				resetbutton.setClickable(false);
+				lapbutton.setClickable(false);
+				for(int i = (lapnum - 2); i >= 0; i--){
 					mytable.removeViewAt(i);
 				}
 				lapnum = 1;
@@ -117,6 +132,15 @@ public class MainActivity extends Activity {
 		//Lap Button
 		lapbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
+				if(lapnum == maxlaps){
+					mHandler.removeCallbacks(mUpdateTimeTask);
+					//Reset starting time to 0.
+					mStartTime = 0L;
+					resetbutton.setClickable(true);
+					//Lap button only clickable when timer is running.
+					lapbutton.setClickable(false);
+				}
+				
 				inflateLaps("", 0);
 				lapnum++;
 				//Checking if current lap took more or less cycles than the fastest to determine
@@ -149,13 +173,23 @@ public class MainActivity extends Activity {
 		            mHandler.postDelayed(mUpdateTimeTask, 100);
 		            startbutton.setClickable(false);
 		            resetbutton.setClickable(false);
+		            optionbutton.setClickable(false);
 		            //Only lap button and stop button clickable when timer running.
 		            lapbutton.setClickable(true);
+		            stopbutton.setClickable(true);
 		       }
 			}
 				
 
 		});//End of Start Button
+		
+		//Option Butotn
+		optionbutton.setOnClickListener(new OnClickListener(){
+			public void onClick(View v){
+				Intent i = new Intent(MainActivity.this, SecondaryActivity.class);
+     		      startActivity(i);
+			}
+		});
 		
     }
     
@@ -299,5 +333,20 @@ public class MainActivity extends Activity {
 		      // Add new textviews to lapLayout.
 		      mytable.addView(newTagView, index);
 		} // end makeTagGUI
+		
+		public void onResume(){
+			super.onResume();
+			Bundle extras = getIntent().getExtras();
+			if(resumed = true){
+				if (extras != null) {
+				    int value = extras.getInt("numoflaps1");
+				    maxlaps = value;
+				}
+			}
+			stopbutton.setClickable(false);
+			resetbutton.setClickable(false);
+			lapbutton.setClickable(false);
+			resumed = true;
+		}
 		
 }

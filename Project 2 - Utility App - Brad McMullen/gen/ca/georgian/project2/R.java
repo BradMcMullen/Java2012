@@ -18,19 +18,23 @@ public final class R {
         public static final int splash2=0x7f020004;
     }
     public static final class id {
-        public static final int AbsoluteLayout1=0x7f070010;
+        public static final int AbsoluteLayout1=0x7f070014;
+        public static final int cancelbtn=0x7f070012;
         public static final int currentlaptext=0x7f070008;
         public static final int fastlaptext=0x7f07000c;
-        public static final int imageView1=0x7f070011;
+        public static final int imageView1=0x7f070015;
         public static final int inflater1=0x7f07000d;
         public static final int lapLayout=0x7f07000f;
         public static final int lapView=0x7f07000e;
         public static final int lapbtn=0x7f070005;
         public static final int lapnumtv=0x7f070000;
         public static final int laptimetv=0x7f070001;
-        public static final int menu_settings=0x7f070012;
+        public static final int menu_settings=0x7f070016;
+        public static final int numoflaps=0x7f070011;
+        public static final int optionbtn=0x7f070010;
         public static final int previouslaptext=0x7f07000a;
         public static final int resetbtn=0x7f070006;
+        public static final int savebtn=0x7f070013;
         public static final int startbtn=0x7f070003;
         public static final int stopbtn=0x7f070004;
         public static final int textView1=0x7f070007;
