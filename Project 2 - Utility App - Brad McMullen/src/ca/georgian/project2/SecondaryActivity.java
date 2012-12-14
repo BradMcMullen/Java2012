@@ -1,3 +1,9 @@
+//SecondaryActivity.java
+//Brad McMullen
+//Last Modified: December 14, 2012.
+//Purpose: This is the secondary area of this application.  This activity allows the user to input
+//how many laps are going to be done.
+
 package ca.georgian.project2;
 
 import android.app.Activity;
@@ -28,6 +34,15 @@ public class SecondaryActivity extends Activity {
 		numoflapsedit = (EditText) findViewById(R.id.numoflaps);
 		savebutton = (Button) findViewById(R.id.savebtn);
 		cancelbutton = (Button) findViewById(R.id.cancelbtn);
+		
+		Button aboutbutton = (Button) findViewById(R.id.aboutbtn);
+		
+		aboutbutton.setOnClickListener(new OnClickListener(){
+			public void onClick(View v){
+				Intent i = new Intent(SecondaryActivity.this, AboutActivity.class);
+   		      		startActivity(i);
+			}
+		});
 	
 		cancelbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
@@ -44,6 +59,7 @@ public class SecondaryActivity extends Activity {
 				int lapint = 0;
 				
 				if (lapstr.equals("")){
+					//Tell the user if they forgot to enter a number.
 					AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		    		builder.setTitle("Something went wrong");
 		    		builder.setMessage(String.format("%s",
@@ -53,6 +69,7 @@ public class SecondaryActivity extends Activity {
 		    		builder.show();
 				}
 				else{
+					//Send the value back to the previous activity.
 					lapint = Integer.parseInt(lapstr);
 					Intent i = new Intent(SecondaryActivity.this, MainActivity.class);
 					i.putExtra("numoflaps1", lapint);

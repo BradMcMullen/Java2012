@@ -1,21 +1,17 @@
 //MainActivity.java
 //Brad McMullen
-//Last Modified: December 11, 2012.
+//Last Modified: December 14, 2012.
 //Purpose: This is the main area of my stop-watch application.  This is where the timer runs
 //updates the textviews, starts/stops/resets, etc.
 
 package ca.georgian.project2;
 
 import java.text.DecimalFormat;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,6 +84,8 @@ public class MainActivity extends Activity {
 		//Stop Button
 		stopbutton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
+				fastLapDisplay.setText(currLapDisplay.getText());
+				prevLapDisplay.setText(currLapDisplay.getText());
 				stop = true;
 				inflateLaps("", 0);
 				mHandler.removeCallbacks(mUpdateTimeTask);
@@ -307,7 +305,7 @@ public class MainActivity extends Activity {
 				   
 				//End of sub-displays
 				//Handler/Timer iteration speed control.
-				mHandler.postDelayed(mUpdateTimeTask, 10);
+				mHandler.postDelayed(mUpdateTimeTask, 50);
 		   }
 		};//
 		

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
+    android:layout_height="match_parent"
+    android:background="@drawable/bg2" >
+
     <TextView
         android:id="@+id/timeText"
         android:layout_width="293dp"
         android:layout_height="wrap_content"
-        android:layout_x="10dp"
+        android:layout_x="15dp"
         android:layout_y="14dp"
         android:text="0:00:00.0"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#888888"
         android:textSize="70dp" />
 
     <Button

@@ -1,10 +1,14 @@
+//SplashScreen.java
+//Brad McMullen
+//Last Modified: December 14, 2012.
+//Purpose: This is the splash screen for the application.
+
 package ca.georgian.project2;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 
 public class SplashScreen extends Activity {
 
@@ -15,7 +19,7 @@ public class SplashScreen extends Activity {
         
         countDownTimer.start();
     }
-        
+        //After 5 seconds, load the main activity.
         CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
 
     		@Override
@@ -25,6 +29,7 @@ public class SplashScreen extends Activity {
 
     		@Override
     		public void onFinish() {
+    			//Call the main activity.
     			Intent i = new Intent(SplashScreen.this, MainActivity.class);
        		      startActivity(i);
     		}// end onFinish

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg2" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="295dp"
+        android:layout_height="38dp"
+        android:layout_x="12dp"
+        android:layout_y="0dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Stopwatch, created by Brad McMullen."
+        android:textColor="#888888"
+        android:textSize="16dp" />
+
+    <Button
+        android:id="@+id/backbtn"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_x="126dp"
+        android:layout_y="425dp"
+        android:text="Back" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="290dp"
+        android:layout_height="287dp"
+        android:layout_x="16dp"
+        android:layout_y="128dp"
+        android:text="Welcome to the stopwatch app.  On the main activity screen there are 5 buttons, each with a set of conditions required to be used.  The start and options buttons are enabled by default.  Pressing the start button enables the stop and lap buttons while disabling itself and the options button.  The stop and lap buttons are only enabled when the timer is active.  The reset button becomes active when the stop button is pressed or when the chosen number of laps have been recorded.  Clicking the reset button resets the counter and clears all of the recorded data.  It also enables the start and options buttons while disabling the stop, lap and reset buttons." />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="129dp"
+        android:layout_height="49dp"
+        android:layout_x="99dp"
+        android:layout_y="64dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Instructions"
+        android:textColor="#888888"
+        android:textSize="20dp" />
+
+</AbsoluteLayout>
